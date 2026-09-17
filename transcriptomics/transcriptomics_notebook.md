@@ -90,13 +90,23 @@ Lets dive into project!
 
 **Code:**
 
-``` r
+```         
+cd /gpfs1/cl/biol3990 #change directory
+ll #look in directory
+zcat #un cat something (open zip)
+-n #number of lines
+head #number of lines from the top you want to see
+wc -l #number of lines in file (word count)
 ```
+
+**Image:**
+
+![](images/9.17.2026.terminal.screenshot.png)
 
 **Notes / Observations:**
 
 -   
 
-**Next Steps:**
+**Next Steps:** get started!
 
 ------------------------------------------------------------------------
