@@ -52,7 +52,7 @@ print("Hello World")
 
 **Image:**
 
-![](images/Markdown_Cheat_Sheet){width="297"}
+![](images/Markdown_Cheat_Sheet){width="360"}
 
 **Notes / Observations:**
 
