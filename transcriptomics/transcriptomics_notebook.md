@@ -107,6 +107,6 @@ wc -l #number of lines in file (word count)
 
 -   
 
-**Next Steps:** get started!
+**Next Steps:**
 
 ------------------------------------------------------------------------
