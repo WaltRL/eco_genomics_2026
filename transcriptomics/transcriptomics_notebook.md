@@ -188,3 +188,48 @@ git remote -v
 ![](myresults/PCA_allGens.png)
 
 ------------------------------------------------------------------------
+
+## 9.24.2026 - Transcriptomics Day 4
+
+-   Went over basic R things and then spent a little time messing around with salmon file
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics`
+
+**Input Files:**
+
+`none`
+
+**Output Files:**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/transcriptomics_notebook.md`
+
+**Programs and dependencies:**
+
+-   `R version 4.5.1`
+
+-   `R-Studio`
+
+**Scripts:**
+
+`(.packages()) #shows loaded packages`
+
+**Code:**
+
+``` r
+x <- 5
+students <- data.frame( #makes data frame
+  name = c("A", "B", "C"), #c() combines everything in ()
+  height = c(62,68, 72)
+)
+
+head(students) #shows preview
+class(students) #shows its a data frame
+str(students) #types of data, chr = character num = number
+
+students$name[1] #read me the first entry of "name: column
+students[1,2] #look at (column,row)
+```
+
+------------------------------------------------------------------------

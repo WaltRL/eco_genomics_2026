@@ -14,7 +14,7 @@ library("pheatmap")
 library("vsn")
 
 # Import the counts matrix
-countsTable <- read.table("mydata/salmon.isoform.counts.matrix.filteredAssembly", 
+countsTable <- read.table("transcriptomics/mydata/salmon.isoform.counts.matrix.filteredAssembly", 
                           header=TRUE, row.names=1)
 head(countsTable)
 dim(countsTable)
@@ -23,12 +23,14 @@ countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Sa
 head(countsTableRound)
 
 #import the sample description table
-conds <- read.delim("mydata/ahud_samples_R.txt",
+conds <- read.delim("transcriptomics/mydata/ahud_samples_R.txt",
                     header=TRUE, 
                     stringsAsFactors = TRUE, 
                     row.names=1
                     )
 head(conds)
+conds
+
 
 ### Explore data distributions
 
