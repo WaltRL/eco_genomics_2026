@@ -261,3 +261,37 @@ students[1,2] #look at (column,row)
 Take a look at: `/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/myscripts/9.29.26_AHUD_DESEQpt2.R`
 
 ------------------------------------------------------------------------
+
+## 10.1.2026 - Transcriptomics Day 6 (Still Day 4 Tutorial)
+
+-   Spent final time coding with the class on the salmon file
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics`
+
+**Input Files:**
+
+\~/projects/eco_genomics_2026/transcriptomics/mydata/salmon.isoform.counts.matrix.filteredAssembly
+
+\~/projects/eco_genomics_2026/transcriptomics/mydata/ahud_samples_R.txt
+
+**Output Files:**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/transcriptomics_notebook.md`
+
+**Programs and dependencies:**
+
+-   `R version 4.5.1`
+
+-   `R-Studio`
+
+**Code:**
+
+Take a look at: `/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/myscripts/9.29.26_AHUD_DESEQpt2.R`
+
+**Images:**
+
+![](images/GE_responses_OW&OWA.png)
+
+------------------------------------------------------------------------
