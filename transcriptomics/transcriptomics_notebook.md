@@ -295,3 +295,53 @@ Take a look at: `/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/mysc
 ![](images/GE_responses_OW&OWA.png)
 
 ------------------------------------------------------------------------
+
+## 10.6.2026 - Transcriptomics Day 6 (actually day 6) and GO analysis! (also start of WGCNA)
+
+-   Spent more time with the DESeq data doing GO analysis and also started the script for WGCNA
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics`
+
+**Input Files:**
+
+`~/projects/eco_genomics_2026/transcriptomics/mydata/trinotate_annotation_GOblastx_forTopGO.txt`
+
+`~/projects/eco_genomics_2026/transcriptomics/mydata/transcript_universe.csv`
+
+`~/projects/eco_genomics_2026/transcriptomics/mydata/Ahud_trait_data.txt`
+
+`~/projects/eco_genomics_2026/transcriptomics/mydata/bwnet.rds`
+
+**Output Files:**
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics/myscripts/10.6.26_AHUD_DESEQpt4_GOenrich.R`
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics/myscripts/10.6.26.AHUD.WGCNA.R`
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/transcriptomics_notebook.md`
+
+**Programs and dependencies:**
+
+-   `R version 4.5.1`
+
+-   `R-Studio`
+
+**Code:**
+
+Take a look at:
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics/myscripts/10.6.26.AHUD.WGCNA.R`
+
+and
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/transcriptomics/myscripts/10.6.26_AHUD_DESEQpt4_GOenrich.R`
+
+**Images:**
+
+![](images/AHUD.Cluster.Dendrogram.png)
+
+![](images/AHUD.heatmap.test.png)
+
+------------------------------------------------------------------------
