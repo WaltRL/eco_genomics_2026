@@ -142,22 +142,51 @@ grid.arrange(a1, a2, nrow = 2)
 # convert matrix to numeric
 norm.counts[] <- sapply(norm.counts, as.numeric)
 
-soft_power <- 6 # should try running with 7 based on R^2
+soft_power_6 <- 6 # should try running with 7 based on R^2
+soft_power_8 <- 8
+soft_power_4 <- 4
 temp_cor <- cor
 cor <- WGCNA::cor # use the 'cor' function from the WGCNA package
 
 
 # this step also takes a few minutes; ideally your maxBlockSize is larger than your number of genes to run the memory-intensive network construction all at once.
-bwnet <- blockwiseModules(norm.counts,
+bwnet_6 <- blockwiseModules(norm.counts,
                           maxBlockSize = 26000,
                           minModuleSize = 30, 
-                          reassignThreshold=0,
-                          TOMType = "signed",
-                          power = soft_power,
-                          mergeCutHeight = 0.25,
+                          reassignThreshold=0,#p-value ratio threshold for reassigning genes between modules
+                          TOMType = "signed", #changes how genes are group together, unsigned means direction of change does not matter, signed tells us about directionality
+                          power = soft_power_6, #how tightly or loosely to cluster things
+                          mergeCutHeight = 0.25, #cut off for clustering catergories
                           numericLabels = F,
                           randomSeed = 1234,
                           verbose = 3)
+
+bwnet_4 <- blockwiseModules(norm.counts,
+                            maxBlockSize = 26000,
+                            minModuleSize = 30, 
+                            reassignThreshold=0,#p-value ratio threshold for reassigning genes between modules
+                            TOMType = "signed", #changes how genes are group together, unsigned means direction of change does not matter, signed tells us about directionality
+                            power = soft_power_4, #how tightly or loosely to cluster things
+                            mergeCutHeight = 0.25, #cut off for clustering categories
+                            numericLabels = F,
+                            randomSeed = 1234,
+                            verbose = 3)
+
+saveRDS(bwnet_4, file = "bwnet.4.rds")
+
+
+bwnet_8 <- blockwiseModules(norm.counts,
+                            maxBlockSize = 26000,
+                            minModuleSize = 30, 
+                            reassignThreshold=0,#p-value ratio threshold for reassigning genes between modules
+                            TOMType = "signed", #changes how genes are group together, unsigned means direction of change does not matter, signed tells us about directionality
+                            power = soft_power_8, #how tightly or loosely to cluster things
+                            mergeCutHeight = 0.25, #cut off for clustering categories
+                            numericLabels = F,
+                            randomSeed = 1234,
+                            verbose = 3)
+
+saveRDS(bwnet_8, file = "bwnet.8.rds")
 
 # TOMtype (Topological Overlap Matrix type) parameter - unsigned - doesn't consider positive/negative co-expression
 # signed - when you want to consider the direction of co-expression interaction, e.g., activating or inhibiting
@@ -166,9 +195,9 @@ bwnet <- blockwiseModules(norm.counts,
 # cut height results in fewer, larger modules, while a lower cut height leads to more, 
 # smaller modules.
 
-saveRDS(bwnet, file = "mydata/bwnet.rds")
+saveRDS(bwnet_6, file = "bwnet.6.rds")
 
-bwnet <- readRDS("bwnet.rds")
+bwnet_6 <- readRDS("bwnet.6.rds")
 
 cor <- temp_cor
 
