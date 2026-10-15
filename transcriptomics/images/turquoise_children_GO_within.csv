@@ -1,0 +1,41 @@
+"Child","GO.ID","Term","Annotated","Significant","weightFisher","Rank"
+"turquoise","GO:0006811","monoatomic ion transport",434,363,"2.5e-06",1
+"turquoise","GO:0007586","digestion",63,59,"1.2e-05",2
+"turquoise","GO:0034765","regulation of monoatomic ion transmembra...",120,101,"1.2e-05",3
+"turquoise","GO:1990266","neutrophil migration",64,60,"1.2e-05",4
+"turquoise","GO:0071805","potassium ion transmembrane transport",75,66,"9.2e-05",5
+"brown","GO:0006644","phospholipid metabolic process",139,32,"4.0e-06",1
+"brown","GO:0006744","ubiquinone biosynthetic process",7,6,"8.3e-06",2
+"brown","GO:0050482","arachidonate secretion",18,9,"2.9e-05",3
+"brown","GO:0006334","nucleosome assembly",17,8,"0.00014",4
+"brown","GO:0007099","centriole replication",7,5,"0.00022",5
+"yellow","GO:0006364","rRNA processing",56,20,"5.5e-08",1
+"yellow","GO:0000462","maturation of SSU-rRNA from tricistronic...",9,5,"4.3e-05",2
+"yellow","GO:0042255","ribosome assembly",13,8,"0.00010",3
+"yellow","GO:0001560","regulation of cell growth by extracellul...",6,4,"0.00011",4
+"yellow","GO:0034472","snRNA 3'-end processing",18,6,"0.00023",5
+"red","GO:0031145","anaphase-promoting complex-dependent cat...",17,11,"1.5e-16",1
+"red","GO:0010458","exit from mitosis",11,7,"8.3e-11",2
+"red","GO:0098728","germline stem cell asymmetric division",5,4,"3.5e-07",3
+"red","GO:0097039","protein linear polyubiquitination",7,4,"2.4e-06",4
+"red","GO:0061057","peptidoglycan recognition protein signal...",13,4,"4.5e-05",5
+"green","GO:0050965","detection of temperature stimulus involv...",6,4,"3.0e-07",1
+"green","GO:0007620","copulation",7,4,"7.0e-07",2
+"green","GO:0045924","regulation of female receptivity",10,4,"4.1e-06",3
+"green","GO:0048266","behavioral response to pain",5,3,"1.7e-05",4
+"green","GO:0048011","neurotrophin TRK receptor signaling path...",5,3,"1.7e-05",5
+"salmon","GO:0042182","ketone catabolic process",5,2,"0.00014",1
+"salmon","GO:0043174","nucleoside salvage",6,2,"0.00021",2
+"salmon","GO:0046129","purine ribonucleoside biosynthetic proce...",6,2,"0.00021",3
+"salmon","GO:0042159","lipoprotein catabolic process",9,2,"0.00051",4
+"salmon","GO:0021532","neural tube patterning",9,2,"0.00051",5
+"pink","GO:1903077","negative regulation of protein localizat...",5,3,"1.2e-06",1
+"pink","GO:0002431","Fc receptor mediated stimulatory signali...",7,3,"4.1e-06",2
+"pink","GO:0043001","Golgi to plasma membrane protein transpo...",18,3,"9.2e-05",3
+"pink","GO:0002250","adaptive immune response",21,3,"0.00015",4
+"pink","GO:0034332","adherens junction organization",24,3,"0.00022",5
+"tan","GO:0046121","deoxyribonucleoside catabolic process",5,4,"1.9e-09",1
+"tan","GO:0009264","deoxyribonucleotide catabolic process",8,4,"2.6e-08",2
+"tan","GO:0046386","deoxyribose phosphate catabolic process",8,4,"2.6e-08",3
+"tan","GO:0016052","carbohydrate catabolic process",109,7,"1.2e-05",4
+"tan","GO:2000479","regulation of cAMP-dependent protein kin...",5,2,"0.00021",5

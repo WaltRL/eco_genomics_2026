@@ -1,0 +1,31 @@
+"GO.ID","Term","Annotated","Significant","weightFisher","Module","Power","Rank"
+"GO:0034765","regulation of monoatomic ion transmembra...",213,118,"5.6e-17","turquoise","4",1
+"GO:1990266","neutrophil migration",97,66,"1.5e-16","turquoise","4",2
+"GO:1902476","chloride transmembrane transport",60,49,"1.5e-13","turquoise","4",3
+"GO:0007586","digestion",90,65,"5.7e-12","turquoise","4",4
+"GO:0050877","nervous system process",565,317,"1.4e-11","turquoise","4",5
+"GO:0006936","muscle contraction",236,162,"1.5e-26","turquoise","6",1
+"GO:0007527","adult somatic muscle development",85,74,"1.2e-21","turquoise","6",2
+"GO:0071689","muscle thin filament assembly",81,70,"3.9e-20","turquoise","6",3
+"GO:0043520","regulation of myosin II filament assembl...",74,65,"1.3e-19","turquoise","6",4
+"GO:0030241","skeletal muscle myosin thick filament as...",86,72,"5.1e-19","turquoise","6",5
+"GO:0006936","muscle contraction",236,139,"3.9e-21","turquoise","8",1
+"GO:1990266","neutrophil migration",97,63,"2.4e-18","turquoise","8",2
+"GO:0007527","adult somatic muscle development",85,60,"1.2e-15","turquoise","8",3
+"GO:0034765","regulation of monoatomic ion transmembra...",213,104,"2.8e-15","turquoise","8",4
+"GO:0071689","muscle thin filament assembly",81,57,"7.7e-15","turquoise","8",5
+"GO:0044211","CTP salvage",4,3,"4.5e-06","yellow","4",1
+"GO:0044206","UMP salvage",9,3,"9.1e-05","yellow","4",2
+"GO:0035169","lymph gland plasmatocyte differentiation",2,2,"0.00011","yellow","4",3
+"GO:0035170","lymph gland crystal cell differentiation",2,2,"0.00011","yellow","4",4
+"GO:2000826","regulation of heart morphogenesis",2,2,"0.00011","yellow","4",5
+"GO:0010882","regulation of cardiac muscle contraction...",18,7,"2.6e-09","yellow","6",1
+"GO:1901673","regulation of mitotic spindle assembly",10,7,"1.0e-08","yellow","6",2
+"GO:0031291","Ran protein signal transduction",8,6,"6.9e-08","yellow","6",3
+"GO:0042538","hyperosmotic salinity response",7,5,"1.4e-06","yellow","6",4
+"GO:0030574","collagen catabolic process",33,9,"2.3e-06","yellow","6",5
+"GO:0006364","rRNA processing",222,51,"2.7e-07","yellow","8",1
+"GO:0006491","N-glycan processing",19,9,"3.8e-06","yellow","8",2
+"GO:0000724","double-strand break repair via homologou...",131,22,"1.3e-05","yellow","8",3
+"GO:0000462","maturation of SSU-rRNA from tricistronic...",39,13,"1.6e-05","yellow","8",4
+"GO:0031047","regulatory ncRNA-mediated gene silencing",158,23,"2.0e-05","yellow","8",5

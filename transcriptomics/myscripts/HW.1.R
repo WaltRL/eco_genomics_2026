@@ -153,28 +153,6 @@ plotDendroAndColors(bwnet_4$dendrograms[[1]], cbind(bwnet_4$unmergedColors, bwne
                     hang= 0.03,
                     guideHang = 0.05)
 
-##All Together
-nets <- list("Power 4" = bwnet_4,
-             "Power 6" = bwnet_6,
-             "Power 8" = bwnet_8)
-
-# Function: dendrogram + unmerged/merged module colors
-plot_dendro <- function(net, title, block = 1) {
-  # genes belonging to this block (handles multi-block runs safely)
-  idx <- net$blockGenes[[block]]
-  
-  plotDendroAndColors(
-    net$dendrograms[[block]],
-    cbind(net$unmergedColors[idx], net$colors[idx]),
-    groupLabels = c("Unmerged", "Merged"),
-    dendroLabels = FALSE,
-    hang = 0.03,
-    addGuide = TRUE,
-    guideHang = 0.05,
-    main = paste("Gene Dendrogram and Module Colors -", title)
-  )
-}
-
 ###Bwent with threshold of 6 ---------------------------------------------------------
 module_eigengenes_6 <- bwnet_6$MEs
 
@@ -206,6 +184,29 @@ plotDendroAndColors(bwnet_8$dendrograms[[1]], cbind(bwnet_8$unmergedColors, bwne
                     addGuide = TRUE,
                     hang= 0.03,
                     guideHang = 0.05)
+
+
+##All Together
+nets <- list("Power 4" = bwnet_4,
+             "Power 6" = bwnet_6,
+             "Power 8" = bwnet_8)
+
+# Function: dendrogram + unmerged/merged module colors
+plot_dendro <- function(net, title, block = 1) {
+  # genes belonging to this block (handles multi-block runs safely)
+  idx <- net$blockGenes[[block]]
+  
+  plotDendroAndColors(
+    net$dendrograms[[block]],
+    cbind(net$unmergedColors[idx], net$colors[idx]),
+    groupLabels = c("Unmerged", "Merged"),
+    dendroLabels = FALSE,
+    hang = 0.03,
+    addGuide = TRUE,
+    guideHang = 0.05,
+    main = paste("Gene Dendrogram and Module Colors -", title)
+  )
+}
 
 #Stitching them together
 for (nm in names(nets)) {
@@ -254,218 +255,6 @@ cor(bwnet_4$MEs, bwnet_8$MEs)
 
 ### WGNCA
 
-setwd("~/projects/eco_genomics_2026/transcriptomics/mydata")
-options(stringsAsFactors = FALSE);
-library(WGCNA);
-library(DESeq2)
-library(ggplot2)
-library(tidyverse)
-library(CorLevelPlot) 
-library(gridExtra)
-library(Rmisc) 
-
-###Setting Up and Running DESeq
-countsTable <- read.table("salmon.isoform.counts.matrix.filteredAssembly", header=TRUE, row.names=1)
-head(countsTable)
-dim(countsTable)
-
-countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
-head(countsTableRound)
-
-#import the sample description table
-conds <- read.delim("ahud_samples_R.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
-head(conds)
-
-sample_metadata = read.table(file = "Ahud_trait_data.txt",header=T, row.names = 1)
-
-dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=sample_metadata, 
-                              design= ~ 1)
-
-dim(dds)
-
-# Filter out genes with too few reads - remove all genes with counts < 15 in more than 75% of samples, so ~28)
-## suggested by WGCNA on RNAseq FAQ
-
-dds <- dds[rowSums(counts(dds) >= 15) >= 28,]
-nrow(dds) 
-# [1] 25260, that have at least 15 reads (a.k.a counts) in 75% of the samples
-
-# Run the DESeq model to test for differential gene expression
-dds <- DESeq(dds)
-
-
-# 2. QC - outlier detection ------------------------------------------------
-# detect outlier genes
-
-gsg <- goodSamplesGenes(t(countsTable))
-summary(gsg)
-gsg$allOK
-
-table(gsg$goodGenes)
-table(gsg$goodSamples)
-
-# detect outlier samples - hierarchical clustering - method 1
-htree <- hclust(dist(t(countsTable)), method = "average")
-plot(htree) 
-
-# pca - method 2
-
-pca <- prcomp(t(countsTable))
-pca.dat <- pca$x
-
-pca.var <- pca$sdev^2
-pca.var.percent <- round(pca.var/sum(pca.var)*100, digits = 2)
-
-pca.dat <- as.data.frame(pca.dat)
-
-ggplot(pca.dat, aes(PC1, PC2)) +
-  geom_point() +
-  geom_text(label = rownames(pca.dat)) +
-  labs(x = paste0('PC1: ', pca.var.percent[1], ' %'),
-       y = paste0('PC2: ', pca.var.percent[2], ' %'))
-
-# All of our samples look good; the genes that don't look good shouldn't cluster well and 
-# should end up in the "grey", catch all module for uncorrelated genes.
-
-# 3. Normalization ----------------------------------------------------------------------
-
-colData <- row.names(sample_metadata)
-
-# making the rownames and column names identical
-all(rownames(colData) %in% colnames(countsTableRound)) # to see if all samples are present in both
-all(rownames(colData) == colnames(countsTableRound))  # to see if all samples are in the same order
-
-# perform variance stabilization
-dds_norm <- vst(dds)
-#dds_norm <- vst(normalized_counts)
-
-# get normalized counts
-norm.counts <- assay(dds_norm) %>% 
-  t()
-
-# 4. Network Construction  ---------------------------------------------------
-# Choose a set of soft-thresholding powers
-power <- c(c(1:10), seq(from = 12, to = 50, by = 2))
-
-# Call the network topology analysis function; this step takes a couple minutes
-sft <- pickSoftThreshold(norm.counts,
-                         powerVector = power,
-                         networkType = "signed",
-                         verbose = 5)
-
-sft.data <- sft$fitIndices 
-
-# visualization to pick power
-
-a1 <- ggplot(sft.data, aes(Power, SFT.R.sq, label = Power)) +
-  geom_point() +
-  geom_text(nudge_y = 0.1) +
-  geom_hline(yintercept = 0.8, color = 'red') +
-  labs(x = 'Power', y = 'Scale free topology model fit, signed R^2') +
-  theme_classic()
-
-
-a2 <- ggplot(sft.data, aes(Power, mean.k., label = Power)) +
-  geom_point() +
-  geom_text(nudge_y = 0.1) +
-  labs(x = 'Power', y = 'Mean Connectivity') +
-  theme_classic()
-
-
-grid.arrange(a1, a2, nrow = 2)
-# based on this plot, choose a soft power to maximize R^2 (above 0.8) and minimize connectivity
-# for these ahud data: 6-8; Higher R2 should yield more modules.
-
-
-# convert matrix to numeric
-norm.counts[] <- sapply(norm.counts, as.numeric)
-
-soft_power_6 <- 6 # should try running with 7 based on R^2
-soft_power_8 <- 8
-soft_power_4 <- 4
-temp_cor <- cor
-cor <- WGCNA::cor # use the 'cor' function from the WGCNA package
-
-###WGNCA Visualizations
-
-bwnet_4 <- readRDS("bwnet.4.rds")
-bwnet_6 <- readRDS("bwnet.6.rds")
-bwnet_8 <- readRDS("bwnet.8.rds")
-
-###Bwent with threshold of 4 ---------------------------------------------------------
-module_eigengenes_4 <- bwnet_4$MEs
-
-head(module_eigengenes_4)
-
-# Plot the dendrogram and the module colors before and after merging underneath
-plotDendroAndColors(bwnet_4$dendrograms[[1]], cbind(bwnet_4$unmergedColors, bwnet_4$colors),
-                    c("unmerged", "merged"),
-                    dendroLabels = FALSE,
-                    addGuide = TRUE,
-                    hang= 0.03,
-                    guideHang = 0.05)
-
-###Bwent with threshold of 6 ---------------------------------------------------------
-module_eigengenes_6 <- bwnet_6$MEs
-
-head(module_eigengenes_6)
-
-# get number of genes for each module
-table(bwnet_6$colors)
-
-# Plot the dendrogram and the module colors before and after merging underneath
-plotDendroAndColors(bwnet_6$dendrograms[[1]], cbind(bwnet_6$unmergedColors, bwnet_6$colors),
-                    c("unmerged", "merged"),
-                    dendroLabels = FALSE,
-                    addGuide = TRUE,
-                    hang= 0.03,
-                    guideHang = 0.05)
-
-###Bwent with threshold of 8 ---------------------------------------------------------
-module_eigengenes_8 <- bwnet_8$MEs
-
-head(module_eigengenes_8)
-
-# get number of genes for each module
-table(bwnet_8$colors)
-
-# Plot the dendrogram and the module colors before and after merging underneath
-plotDendroAndColors(bwnet_8$dendrograms[[1]], cbind(bwnet_8$unmergedColors, bwnet_8$colors),
-                    c("unmerged", "merged"),
-                    dendroLabels = FALSE,
-                    addGuide = TRUE,
-                    hang= 0.03,
-                    guideHang = 0.05)
-
-##All Together
-nets <- list("Power 4" = bwnet_4,
-             "Power 6" = bwnet_6,
-             "Power 8" = bwnet_8)
-
-# Function: dendrogram + unmerged/merged module colors
-plot_dendro <- function(net, title, block = 1) {
-  # genes belonging to this block (handles multi-block runs safely)
-  idx <- net$blockGenes[[block]]
-  
-  plotDendroAndColors(
-    net$dendrograms[[block]],
-    cbind(net$unmergedColors[idx], net$colors[idx]),
-    groupLabels = c("Unmerged", "Merged"),
-    dendroLabels = FALSE,
-    hang = 0.03,
-    addGuide = TRUE,
-    guideHang = 0.05,
-    main = paste("Gene Dendrogram and Module Colors -", title)
-  )
-}
-
-for (nm in names(nets)) {
-  png(paste0("dendrogram_", gsub(" ", "_", nm), ".png"),
-      width = 2400, height = 1200, res = 200)
-  plot_dendro(nets[[nm]], nm)
-  dev.off()
-}
-
 ##Eigengene Visualization
 ME4 <- bwnet_4$MEs
 ME6 <- bwnet_6$MEs
@@ -501,19 +290,6 @@ me_long <- rbind(to_long(ME4a, "4"),
                  to_long(ME8a, "8"))
 me_long$Module <- sub("^ME", "", me_long$Module)
 
-# 1. Per-sample eigengene values, one panel per module ------------------------
-p_me <- ggplot(me_long, aes(x = Sample, y = Eigengene, fill = Power)) +
-  geom_col(position = position_dodge(width = 0.9), width = 0.85) +
-  facet_wrap(~ Module, ncol = 1, scales = "free_y") +
-  theme_bw() +
-  labs(title = "Module eigengene values across WGCNA soft powers",
-       x = "Sample", y = "Eigengene value", fill = "Soft power") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 7))
-
-p_me
-
-ggsave("~/projects/eco_genomics_2026/transcriptomics/images/eigengene_values_by_power.png",
-       p_me, width = 14, height = 3 * length(shared), dpi = 200, limitsize = FALSE)
 
 # 2. How similar is each module's eigengene to power 6? -----------------------
 cor_df <- rbind(
@@ -572,82 +348,8 @@ p <- ggplot(df, aes(x = Module, y = Count, fill = Threshold)) +
 
 p
 
-ggsave("~/projects/eco_genomics_2026/transcriptomics/images/module_sizes_barplot.png",
-       p, width = 12, height = 6, dpi = 250)
 
-###Visualizing module correlation
-library(pheatmap)
-
-#4 v 6
-corME_46 <- cor(bwnet_4$MEs,
-                bwnet_6$MEs)
-
-pheatmap(corME_46,
-         cluster_rows = TRUE,
-         cluster_cols = TRUE,
-         display_numbers = TRUE)
-
-#4 v 8
-corME_48 <- cor(bwnet_4$MEs,
-                bwnet_8$MEs)
-
-pheatmap(corME_48,
-         cluster_rows = TRUE,
-         cluster_cols = TRUE,
-         display_numbers = TRUE)
-
-##All together
-ME4 <- bwnet_4$MEs
-ME6 <- bwnet_6$MEs
-ME8 <- bwnet_8$MEs
-
-# Add prefixes so modules are identifiable
-colnames(ME4) <- paste0("P4_", colnames(ME4))
-colnames(ME6) <- paste0("P6_", colnames(ME6))
-colnames(ME8) <- paste0("P8_", colnames(ME8))
-
-# Combine eigengenes
-allMEs <- cbind(ME4, ME6, ME8)
-
-# Correlation matrix
-MEcor <- cor(allMEs)
-
-library(pheatmap)
-
-pheatmap(
-  MEcor,
-  color = colorRampPalette(c("blue","white","red"))(100),
-  border_color = NA,
-  main = "Eigengene Correlations Across Soft Threshold Powers"
-)
-
-#Clustering it
-pheatmap(
-  MEcor,
-  cluster_rows = TRUE,
-  cluster_cols = TRUE,
-  display_numbers = TRUE,
-  number_format = "%.2f",
-  color = colorRampPalette(c("navy","white","firebrick3"))(100)
-)
-
-#Gene Reassignment
-table46 <- table(
-  Power4 = bwnet_4$colors,
-  Power6 = bwnet_6$colors
-)
-
-table48 <- table(bwnet_4$colors,
-                 bwnet_8$colors)
-
-table68 <- table(bwnet_6$colors,
-                 bwnet_8$colors)
-
-pheatmap(log10(table46 + 1))
-pheatmap(log10(table48 + 1))
-pheatmap(log10(table68 + 1))
-
-#Pulling Out Some Interesting genes
+###Pulling Out and Looking at Some Interesting genes
 best_match <- apply(abs(MEcor), 1, which.max)
 
 data.frame(
@@ -808,7 +510,17 @@ get_go <- function(id) {
 top5 <- head(hub.df, 5)
 top5$ID <- sub("::g\\.[0-9]+::m\\.[0-9]+$", "", rownames(top5))
 
+top5
+
 top5$ID %in% names(geneID2GO)   # should all be TRUE now
+
+# Any isoform of this gene in the mapping?
+grep("DN12290", names(geneID2GO), value = TRUE)
+
+# Confirm the exact ID you're searching for
+top5$ID[4]
+
+#the false is because we don't have a GO annotation for DN12290
 
 top5_go <- do.call(rbind, lapply(top5$ID, get_go))
 top5_go$kME <- top5$kME[match(top5_go$ID, top5$ID)]
@@ -826,6 +538,8 @@ top5_go
 #8                                                   synaptic vesicle       CC 0.9668181
 #9                                          synaptic vesicle membrane       CC 0.9668181
 #10                                                   terminal bouton       CC 0.9668181
+
+###Looking into the turquoise module
 
 library(topGO)
 library(dplyr)
@@ -926,6 +640,91 @@ p_go <- ggplot(plot_df, aes(x = neglogp, y = Term, fill = Power)) +
 
 p_go
 
-ggsave("~/projects/eco_genomics_2026/images/GO_comparison_powers.png",
-       p_go, width = 11, height = 7, dpi = 250)
+
+### Yellow module ---------------------------------------------------------------
+# Check yellow exists at each power first
+table(bwnet_4$colors)["yellow"]
+table(bwnet_6$colors)["yellow"]
+table(bwnet_8$colors)["yellow"]
+
+go4_y <- run_go(bwnet_4, "4", module = "yellow")
+go6_y <- run_go(bwnet_6, "6", module = "yellow")
+go8_y <- run_go(bwnet_8, "8", module = "yellow")
+
+# Top terms at each power
+head(go4_y[, c("GO.ID", "Term", "Significant", "weightFisher")], 10)
+head(go6_y[, c("GO.ID", "Term", "Significant", "weightFisher")], 10)
+head(go8_y[, c("GO.ID", "Term", "Significant", "weightFisher")], 10)
+
+
+
+# 1. Gene overlap of the yellow module across powers
+tq_y <- list(
+  P4 = names(bwnet_4$colors)[bwnet_4$colors == "yellow"],
+  P6 = names(bwnet_6$colors)[bwnet_6$colors == "yellow"],
+  P8 = names(bwnet_8$colors)[bwnet_8$colors == "yellow"]
+)
+sapply(tq_y, length)
+
+jaccard(tq_y$P4, tq_y$P6)
+jaccard(tq_y$P4, tq_y$P8)
+jaccard(tq_y$P6, tq_y$P8)
+
+# Where did the power 6 yellow genes go at power 4 and power 8?
+y6 <- names(bwnet_6$colors)[bwnet_6$colors == "yellow"]
+
+sort(table(bwnet_4$colors[y6]), decreasing = TRUE)
+sort(table(bwnet_8$colors[y6]), decreasing = TRUE)
+
+# And the reverse: what were the power 8 yellow genes at power 6?
+y8 <- names(bwnet_8$colors)[bwnet_8$colors == "yellow"]
+sort(table(bwnet_6$colors[y8]), decreasing = TRUE)
+
+# 2. Overlap of the top-N enriched terms
+N <- 50
+top_terms_y <- list(
+  P4 = head(go4_y$GO.ID, N),
+  P6 = head(go6_y$GO.ID, N),
+  P8 = head(go8_y$GO.ID, N)
+)
+length(intersect(top_terms_y$P4, top_terms_y$P6))
+length(intersect(top_terms_y$P4, top_terms_y$P8))
+length(intersect(top_terms_y$P6, top_terms_y$P8))
+length(Reduce(intersect, top_terms_y))
+
+# 3. Side-by-side p-value table
+go_all_y <- bind_rows(go4_y, go6_y, go8_y)
+
+go_wide_y <- go_all_y %>%
+  dplyr::select(GO.ID, Term, Power, p) %>%
+  pivot_wider(names_from = Power, values_from = p, names_prefix = "p_power") %>%
+  dplyr::mutate(best_p = pmin(p_power4, p_power6, p_power8, na.rm = TRUE)) %>%
+  dplyr::arrange(best_p)
+
+head(go_wide_y, 20)
+
+sig_y <- go_wide_y %>%
+  dplyr::mutate(across(starts_with("p_power"), ~ .x < 0.05, .names = "sig_{.col}")) %>%
+  dplyr::mutate(n_sig = sig_p_power4 + sig_p_power6 + sig_p_power8)
+
+sig_y %>%
+  dplyr::filter(n_sig == 1) %>%
+  dplyr::select(GO.ID, Term, starts_with("p_power"))
+
+# 4. Plot
+top_union_y <- go_wide_y %>% slice_head(n = 15) %>% pull(GO.ID)
+
+plot_df_y <- go_all_y %>%
+  dplyr::filter(GO.ID %in% top_union_y) %>%
+  dplyr::mutate(neglogp = -log10(pmax(p, 1e-30)),
+                Term = factor(Term, levels = rev(unique(go_wide_y$Term[go_wide_y$GO.ID %in% top_union_y]))))
+
+p_go_y <- ggplot(plot_df_y, aes(x = neglogp, y = Term, fill = Power)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.75) +
+  theme_bw() +
+  labs(title = "Top GO terms in the yellow module across soft powers",
+       x = "-log10(weightFisher p-value)", y = NULL, fill = "Soft power")
+
+p_go_y
+
 
