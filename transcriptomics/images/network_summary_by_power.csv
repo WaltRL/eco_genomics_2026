@@ -1,0 +1,4 @@
+"Power","n_genes","n_blocks","n_modules_excl_grey","n_grey","pct_grey","largest_module","largest_module_size","smallest_module_size"
+"4",25260,1,9,1878,7.4,"turquoise",9221,143
+"6",25260,1,10,1588,6.3,"turquoise",9806,91
+"8",25260,1,14,3190,12.6,"turquoise",7557,46

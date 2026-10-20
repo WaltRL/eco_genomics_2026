@@ -1,0 +1,23 @@
+/var/spool/slurm/d/job5877939/slurm_script: line 23: cd: /users/w/r/wreganlo/projects/eco_genomics_2026/population_genetics/myscripts: No such file or directory
+
+VCFtools - UNKNOWN
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--gzvcf Lottia_gigantea_biallelic.vcf.gz
+	--missing-indv
+	--out missing_data
+
+stat error: No such file or directory
+Error: Can't determine file type of Lottia_gigantea_biallelic.vcf.gz
+
+VCFtools - UNKNOWN
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--gzvcf Lottia_gigantea_biallelic.vcf.gz
+	--depth
+	--out depth_data
+
+stat error: No such file or directory
+Error: Can't determine file type of Lottia_gigantea_biallelic.vcf.gz
