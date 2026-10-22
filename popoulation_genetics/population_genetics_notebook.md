@@ -211,3 +211,82 @@ done
 -   
 
 **Next Steps:**
+
+-   More in class learning
+
+------------------------------------------------------------------------
+
+## 10.22.2026 - Genetic Diversity
+
+-   Working more with the data and finding genetic diversity metrics (nucleotide diversity (π), Tajima’s D and heterozygosity measure)
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genomics`
+
+**Input Files:**
+
+**Output Files:**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genetics/population_genomics_notebook.md`
+
+**Programs and dependencies:**
+
+-   `R version 4.5.1`
+
+-   `R-Studio`
+
+-   `VCF Tools 0.1.16`
+
+**Scripts:**
+
+`DATA_CIR=/users/w/r/wreganlo/projects/eco_genomics_2026/popoulation_genetics/mydata/`
+
+`VCF=$DATA_DIR/Lottia_gigantea_flt3_sub0.01.vcf.gz`
+
+**Code:**
+
+``` bash
+cd ~/path/to/my/files/PopulationGenomics/mydata
+
+module load vcftools
+vcftools --version   # note the version in your notebook
+
+# the 1% subset from Class 1 (make sure this is the right path!)
+# We will assign our data directory and VCF now so we dont have to move around to find this. We will now call #$VCF when needed
+DATA_DIR=~</path/to/my/files>/PopulationGenomics/mydata ###remember change whats in the <>
+VCF=$DATA_DIR/Lottia_gigantea_pl_flt3_noMAF_sub0.01.vcf.gz
+
+# check which columns hold the sample ID and the site
+head sample_metadata.csv
+
+# skip the header line (tail -n +2), keep columns 1 and 2 (cut),
+# and swap the comma between them for a tab (tr)
+tail -n +2 sample_metadata.csv | cut -d ',' -f 1,2 | tr ',' '\t' > popmap.txt
+head popmap.txt ##check it looks correct
+
+# check which columns hold the sample ID and the site
+head sample_metadata.csv
+
+# skip the header line (tail -n +2), keep columns 1 and 2 (cut),
+# and swap the comma between them for a tab (tr)
+tail -n +2 sample_metadata.csv | cut -d ',' -f 1,2 | tr ',' '\t' > popmap.txt
+head popmap.txt ##check it looks correct
+
+mkdir -p pops ##makes subfolder in mydata (where you should be, if unsure use pwd)
+
+# take each site name once (cut column 2, then sort -u), and for each one
+# write the IDs of its individuals (column 1) to pops/SITE.txt
+cut -f 2 popmap.txt | sort -u | while read -r POP; do
+    awk -v pop="$POP" -F '\t' '$2 == pop {print $1}' popmap.txt > pops/${POP}.txt
+done
+
+# how many individuals are there per site?
+wc -l pops/*.txt
+```
+
+**Images:**
+
+**Notes:**
+
+![](images/Code Cheat Sheet for Day 4 Genetic Diversity.png)
