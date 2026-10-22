@@ -22,6 +22,8 @@
 
 `/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/population_genomics_notebook.md`
 
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/myscripts/10.22.2026.genetic.diversity`
+
 **Programs and dependencies:**
 
 -   `R version 4.5.1`
@@ -220,11 +222,17 @@ done
 
 -   Working more with the data and finding genetic diversity metrics (nucleotide diversity (π), Tajima’s D and heterozygosity measure)
 
+-   Made Pi folder in myresults
+
 **Working Directory**
 
 `/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genomics`
 
 **Input Files:**
+
+`~/projects/eco_genomics_2026/popoulation_genetics/mydata/pi/BOD.windowed.pi`
+
+`~/projects/eco_genomics_2026/popoulation_genetics/mydata/pi/PGR.windowed.pi`
 
 **Output Files:**
 
@@ -286,6 +294,10 @@ wc -l pops/*.txt
 ```
 
 **Images:**
+
+![](myresults/pi/pi_by_site.png)
+
+![](myresults/pi/pi_vs_latitude.png)
 
 **Notes:**
 
