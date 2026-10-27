@@ -301,4 +301,173 @@ wc -l pops/*.txt
 
 **Notes:**
 
-![](images/Code Cheat Sheet for Day 4 Genetic Diversity.png)
+![](images/Code%20Cheat%20Sheet%20for%20Day%204%20Genetic%20Diversity.png)
+
+------------------------------------------------------------------------
+
+## 10.27.2026 - Finishing Population Diversity and Starting Selective Sweeps
+
+-   working with the same script as last time, just finishing it up
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genomics`
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genomics`
+
+**Input Files:**
+
+`~/projects/eco_genomics_2026/popoulation_genetics/mydata/pi/BOD.windowed.pi`
+
+`~/projects/eco_genomics_2026/popoulation_genetics/mydata/pi/PGR.windowed.pi`
+
+**Output Files:**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genetics/population_genomics_notebook.md`
+
+`~/projects/eco_genomics_2026/popoulation_genetics/myscripts/10.22&27.2026_genetic_diversity.R`
+
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/popoulation_genetics/myscripts/10.27.2026_Selection_Sweep.R`
+
+**Programs and dependencies:**
+
+-   `R version 4.5.1`
+
+-   `R-Studio`
+
+-   `VCF Tools 0.1.16`
+
+-   `GCC 13.3.0-xp3epyt`
+
+**Scripts:**
+
+`DATA_CIR=/users/w/r/wreganlo/projects/eco_genomics_2026/popoulation_genetics/mydata/`
+
+`VCF=$DATA_DIR/Lottia_gigantea_flt3_sub0.01.vcf.gz`
+
+**Code:**
+
+``` r
+#slight change in nucleotide diversity and lat chart:
+pi_lat_plot <- ggplot(pi_summary, aes(Latitude, mean_pi, fill = Latitude)) +
+  geom_point(size = 4, shape =21, stroke =1.5) +
+  labs(x = "Latitude (°N)", y = "Nucleotide diversity") +
+  theme_classic()+
+  theme(legend.position = "none")+
+  scale_fill_viridis_c()+
+  coord_flip()
+
+ggsave(paste0(OUTDIR, "/pi/pi_vs_latitude.png"), plot = pi_lat_plot, width = 7, height = 7)
+```
+
+**Image:**
+
+![](myresults/het/F_by_site.png)
+
+![](myresults/het/Ho_by_site.png)
+
+![](myresults/pairwise_fst_heatmap.png)
+
+**Bash Script for Selective Sweep:**
+
+```{bash}
+
+##change to your directory
+cd </users/d/s/dsadler1/projects/eco_genomics_2026/PopulationGenomics/mydata>
+##lets call it DIR for ease
+DIR=</users/d/s/dsadler1/projects/eco_genomics_2026/PopulationGenomics/mydata>
+
+###copy files across, at this stage should just be pop_level_biooracle.csv
+cp /gpfs1/cl/biol3990/PopulationGenomics/Selection/pop_level_biooracle.csv $DIR
+
+#check you have the data needed from last week
+ll
+
+# sample IDs from the VCF header line (#CHROM ...), one per line
+zgrep -m 1 "^#CHROM" Lottia_gigantea_flt3_sub0.01.vcf.gz | cut -f 10- | tr '\t' '\n' > vcf_samples.txt
+wc -l vcf_samples.txt #should be 553
+head vcf_samples.txt # is it as expected?
+
+##We did this already:
+#mkdir -p pops
+
+#for pop in $(cut -f2 popmap.txt | sort -u); do
+#  awk -F '\t' -v p="${pop}" '$2 == p {print $1}' popmap.txt > pops/${pop}.txt
+#done
+
+#ls pops/
+
+##first make sure you are in the right directory
+## should be </users/d/s/dsadler1/projects/eco_genomics_2026/PopulationGenomics/mydata>
+cd $DIR
+
+###load vcftools
+module load gcc
+module load vcftools
+###remember to note versions
+###lets do the usual assigning of VCF:
+VCF=$DIR/Lottia_gigantea_flt3_sub0.01.vcf.gz
+POP1=ASU     # This can be any population, but lets do most southern ...
+POP2=KRU     # ... and most northern.
+
+mkdir -p fst #lets make a FST directory 
+
+###Ok now lets run vcftools 
+vcftools --gzvcf ${VCF} \
+  --weir-fst-pop pops/${POP1}.txt \
+  --weir-fst-pop pops/${POP2}.txt \
+  --out fst/${POP1}_vs_${POP2} \
+  2> fst/${POP1}_vs_${POP2}.log ##prints what would be displayed in the terminal to summarise mean FST
+
+grep "Fst estimate" fst/${POP1}_vs_${POP2}.log
+head fst/${POP1}_vs_${POP2}.weir.fst
+
+##Results:
+#Outputting Weir and Cockerham Fst estimates.
+#Weir and Cockerham mean Fst estimate: 0.016245
+#Weir and Cockerham weighted Fst estimate: 0.020162
+
+#CHROM   POS     WEIR_AND_COCKERHAM_FST
+#KB201664.1      50854   0.0389803
+#KB201667.1      39661   -0.0123061
+#KB201671.1      41675   -0.0302576
+#KB201671.1      93377   -0.0130029
+#KB201671.1      99312   -0.0141937
+#KB201671.1      132079  -0.0180995
+#KB201674.1      62331   0.0456012
+#KB201674.1      86673   -0.0172933
+#KB201674.1      99085   0.0192308
+
+##3.3 Genome-wide FST between all pairs of populations
+
+##
+POPS=( $(cut -f2 popmap.txt | sort -u) ) ##f extracts column, 2 extracts second column, sort -u keeps only unique values (i.e., gives you one row per pop)
+mkdir -p fst/pairwise
+echo -e "pop1\tpop2\tmean_fst\tweighted_fst" > fst/pairwise_fst_summary.txt #makes empty txt file headed as pop1 etc
+
+for (( i=0; i<${#POPS[@]}; i++ )); do ### starts at first row
+  for (( j=i+1; j<${#POPS[@]}; j++ )); do ###starts at second row 
+    p1=${POPS[$i]} ##i allocated to p1 (first pairwise)
+    p2=${POPS[$j]} ##j allocated to p2 (second pairwise)
+    vcftools --gzvcf ${VCF} \
+      --weir-fst-pop pops/${p1}.txt \
+      --weir-fst-pop pops/${p2}.txt \
+      --out fst/pairwise/${p1}_vs_${p2} \
+      2> fst/pairwise/${p1}_vs_${p2}.log ##same vcftools code as above but looped through
+    mean=$(grep "mean Fst" fst/pairwise/${p1}_vs_${p2}.log | awk '{print $NF}') ##extracts the mean FST through each loop using grep
+    weighted=$(grep "weighted Fst" fst/pairwise/${p1}_vs_${p2}.log | awk '{print $NF}') ##also the weighted
+    echo -e "${p1}\t${p2}\t${mean}\t${weighted}" >> fst/pairwise_fst_summary.txt ###adds each loop result to the txt file
+  done
+done ##note two done's as we have a for loop within a for loop!
+
+
+column -t fst/pairwise_fst_summary.txt
+```
+
+**Notes / Observations:**
+
+-   
+
+**Next Steps:**
