@@ -329,7 +329,7 @@ wc -l pops/*.txt
 
 `~/projects/eco_genomics_2026/popoulation_genetics/myscripts/10.22&27.2026_genetic_diversity.R`
 
-`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/popoulation_genetics/myscripts/10.27.2026_Selection_Sweep.R`
+`/gpfs1/home/w/r/wreganlo/projects/eco_genomics_2026/popoulation_genetics/myscripts/10.27.2026_selection_signatures.R`
 
 **Programs and dependencies:**
 
@@ -466,8 +466,60 @@ done ##note two done's as we have a for loop within a for loop!
 column -t fst/pairwise_fst_summary.txt
 ```
 
+**Next Steps:**
+
+------------------------------------------------------------------------
+
+## 10.29.2026 - BayPass
+
+-   working with same data, not running any of the terminal scripts as it would take too long.
+
+-   made a new script for it.
+
+**Working Directory**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genomics`
+
+**Input Files:**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/mydata/baypass/`
+
+**Output Files:**
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/population_genetics/population_genetics_notebook.md`
+
+`/gpfs1/home/w/r/wreganlo/eco_genomics_2026/transcriptomics/myscripts/10.29.2026.baypass.R`
+
+**Programs and dependencies:**
+
+-   `R version 4.5.1 (with Tidyverse)`
+
+-   `R-Studio`
+
+**Scripts:**
+
+`See class tutorial for Bash script to generate the files used for this day`
+
+**Images:**
+
+![](myresults/baypass/baypass_omega_tree.png)
+
+![](myresults/baypass/baypass_omega.png)
+
+![](myresults/baypass/baypass_xtx_pvalues.png)
+
+![](myresults/baypass/baypass_xtx_scan.png)
+
+![](myresults/baypass/baypass_bf_scan.png)
+
+![](myresults/baypass/baypass_top_sst_snp.png)
+
+![](myresults/baypass/baypass_top_lat_snp.png)
+
 **Notes / Observations:**
 
--   
+-   See the tutorial for the BayPass input files!!
 
 **Next Steps:**
+
+-   Done with unit!
